@@ -19,6 +19,10 @@ public class FirebaseConfig {
             InputStream serviceAccount =
                     getClass().getClassLoader().getResourceAsStream("firebase-key.json");
 
+            if (serviceAccount == null) {
+                throw new RuntimeException("firebase-key.json not found in resources");
+            }
+
             FirebaseOptions options = FirebaseOptions.builder()
                     .setCredentials(GoogleCredentials.fromStream(serviceAccount))
                     .setDatabaseUrl("https://abcd-88bae-default-rtdb.firebaseio.com/")
@@ -26,6 +30,7 @@ public class FirebaseConfig {
 
             if (FirebaseApp.getApps().isEmpty()) {
                 FirebaseApp.initializeApp(options);
+                System.out.println("Firebase initialized successfully");
             }
 
         } catch (Exception e) {
