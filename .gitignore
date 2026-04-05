@@ -1,0 +1,8 @@
+# Ignore Firebase service account
+src/main/resources/firebase-key.json
+
+# Optional: ignore IDE files
+.idea/
+*.iml
+target/
+node_modules/
