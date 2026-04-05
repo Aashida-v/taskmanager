@@ -1,8 +1,12 @@
-# Use Java 17
-FROM openjdk:17
+FROM eclipse-temurin:17-jdk
 
-# Copy jar file
-COPY target/*.jar app.jar
+WORKDIR /app
 
-# Run the application
-ENTRYPOINT ["java","-jar","/app.jar"]
+COPY . .
+
+RUN chmod +x mvnw
+RUN ./mvnw clean package -DskipTests
+
+EXPOSE 8080
+
+CMD ["java","-jar","target/taskmanager-0.0.1-SNAPSHOT.jar"]
