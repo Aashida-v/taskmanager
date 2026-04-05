@@ -3,10 +3,10 @@ package com.example.taskmanager.config;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
-
 import jakarta.annotation.PostConstruct;
 import org.springframework.context.annotation.Configuration;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
 @Configuration
@@ -15,17 +15,18 @@ public class FirebaseConfig {
     @PostConstruct
     public void init() {
         try {
+            // Read the service account JSON from environment variable
+            String firebaseJson = System.getenv("FIREBASE_SERVICE_ACCOUNT_JSON");
 
-            InputStream serviceAccount =
-                    getClass().getClassLoader().getResourceAsStream("firebase-key.json");
-
-            if (serviceAccount == null) {
-                throw new RuntimeException("firebase-key.json not found in resources");
+            if (firebaseJson == null || firebaseJson.isEmpty()) {
+                throw new RuntimeException("Environment variable FIREBASE_SERVICE_ACCOUNT_JSON is not set");
             }
+
+            InputStream serviceAccount = new ByteArrayInputStream(firebaseJson.getBytes());
 
             FirebaseOptions options = FirebaseOptions.builder()
                     .setCredentials(GoogleCredentials.fromStream(serviceAccount))
-                    .setDatabaseUrl("https://abcd-88bae-default-rtdb.firebaseio.com/")
+                    .setDatabaseUrl("https://abcd-88bae-default-rtdb.firebaseio.com/") // replace with your DB URL
                     .build();
 
             if (FirebaseApp.getApps().isEmpty()) {
@@ -35,6 +36,7 @@ public class FirebaseConfig {
 
         } catch (Exception e) {
             e.printStackTrace();
+            throw new RuntimeException("Failed to initialize Firebase", e);
         }
     }
 }
