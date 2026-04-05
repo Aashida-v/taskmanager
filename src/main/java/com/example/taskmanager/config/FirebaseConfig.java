@@ -13,18 +13,23 @@ import java.io.InputStream;
 public class FirebaseConfig {
 
     @PostConstruct
-    public void init() throws Exception {
+    public void init() {
+        try {
 
-        InputStream serviceAccount =
-                getClass().getClassLoader().getResourceAsStream("firebase-key.json");
+            InputStream serviceAccount =
+                    getClass().getClassLoader().getResourceAsStream("firebase-key.json");
 
-        FirebaseOptions options = FirebaseOptions.builder()
-                .setCredentials(GoogleCredentials.fromStream(serviceAccount))
-                .setDatabaseUrl("https://abcd-88bae-default-rtdb.firebaseio.com/")
-                .build();
+            FirebaseOptions options = FirebaseOptions.builder()
+                    .setCredentials(GoogleCredentials.fromStream(serviceAccount))
+                    .setDatabaseUrl("https://abcd-88bae-default-rtdb.firebaseio.com/")
+                    .build();
 
-        if (FirebaseApp.getApps().isEmpty()) {
-            FirebaseApp.initializeApp(options);
+            if (FirebaseApp.getApps().isEmpty()) {
+                FirebaseApp.initializeApp(options);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }
